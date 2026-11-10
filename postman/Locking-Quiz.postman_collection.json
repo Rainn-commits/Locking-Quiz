@@ -1,0 +1,483 @@
+{
+  "info": {
+    "name": "Locking Quiz API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "jurusan_id",
+      "value": ""
+    },
+    {
+      "key": "tingkat_id",
+      "value": ""
+    },
+    {
+      "key": "kelas_id",
+      "value": ""
+    },
+    {
+      "key": "siswa_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Biodata (layar)",
+      "item": [
+        {
+          "name": "0. start_screens - Mulai (buat siswa)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/biodata"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('siswa_id', pm.response.json().data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "1. identity_screen - simpan nama",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/biodata/{{siswa_id}}/nama",
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\n  \"nama_lengkap\": \"Anna Putri\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Progres 20%', () => pm.expect(pm.response.json().data.progres_persen).to.eql(20));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. nomor_induk_screen - simpan NIS",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/biodata/{{siswa_id}}/nis",
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\n  \"nis\": \"0012345678\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Progres 40%', () => pm.expect(pm.response.json().data.progres_persen).to.eql(40));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3a. jurusan_screen - daftar jurusan",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/jurusan"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const pbk = pm.response.json().data.find(j => j.kode === 'PBK');",
+                  "if (pbk) pm.collectionVariables.set('jurusan_id', pbk.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3b. jurusan_screen - pilih jurusan",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/biodata/{{siswa_id}}/jurusan",
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\n  \"jurusan_id\": {{jurusan_id}}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Progres 60%', () => pm.expect(pm.response.json().data.progres_persen).to.eql(60));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4a. kelas_screen - daftar tingkat",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/tingkat-kelas"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const x = pm.response.json().data.find(t => t.angka === 10);",
+                  "if (x) pm.collectionVariables.set('tingkat_id', x.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "4b. kelas_screen - pilih tingkat",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/biodata/{{siswa_id}}/tingkat",
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\n  \"tingkat_id\": {{tingkat_id}}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Progres 80%', () => pm.expect(pm.response.json().data.progres_persen).to.eql(80));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5a. pilih rombel - daftar kelas",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/biodata/{{siswa_id}}/kelas"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const k = pm.response.json().data[0];",
+                  "if (k) pm.collectionVariables.set('kelas_id', k.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5b. pilih rombel - pilih kelas",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/biodata/{{siswa_id}}/kelas",
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\n  \"kelas_id\": {{kelas_id}}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Progres 100%', () => pm.expect(pm.response.json().data.progres_persen).to.eql(100));",
+                  "pm.test('Biodata lengkap', () => pm.expect(pm.response.json().data.biodata_lengkap).to.be.true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "6. layar selesai - lihat biodata",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/biodata/{{siswa_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Progres 100%', () => pm.expect(pm.response.json().data.progres_persen).to.eql(100));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.token) pm.collectionVariables.set('token', j.token);",
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\n  \"name\": \"Siswa Uji\",\n  \"email\": \"siswa@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+            },
+            "url": "{{baseUrl}}/register"
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.token) pm.collectionVariables.set('token', j.token);",
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password\"\n}"
+            },
+            "url": "{{baseUrl}}/login"
+          }
+        },
+        {
+          "name": "Me (butuh token)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/me",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Logout (butuh token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/logout",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
