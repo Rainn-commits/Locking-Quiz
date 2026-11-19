@@ -10,9 +10,6 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         $this->call(BiodataSeeder::class);
@@ -20,6 +17,15 @@ class DatabaseSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'test@example.com'],
             ['name' => 'Test User', 'password' => 'password'],
+        );
+
+        User::firstOrCreate(
+            ['username' => 'admin'],
+            [
+                'name'     => 'Administrator',
+                'password' => 'ganti-password-ini',
+                'role'     => 'admin',
+            ],
         );
     }
 }
