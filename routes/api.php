@@ -1,10 +1,11 @@
 <?php
-// Taruh di routes/api.php (ganti blok auth lama, termasuk baris komentar yang rusak)
 
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\GuruController;
+use App\Http\Controllers\Admin\SiswaBannedController;
 use App\Http\Controllers\Api\AuthController;
 use Illuminate\Support\Facades\Route;
 
-// Publik (dibatasi 10 request/menit agar tidak bisa di-brute-force)
 Route::middleware('throttle:10,1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
@@ -14,8 +15,20 @@ Route::middleware('throttle:10,1')->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
-// Butuh token Sanctum
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+});
+
+Route::prefix('admin')->group(function () {
+    Route::post('login', [AdminAuthController::class, 'login'])->middleware('throttle:10,1');
+
+    Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+        Route::post('logout', [AdminAuthController::class, 'logout']);
+
+        Route::apiResource('guru', GuruController::class)->except('show');
+
+        Route::get('siswa-banned', [SiswaBannedController::class, 'index']);
+        Route::post('siswa/{siswa}/unlock', [SiswaBannedController::class, 'unlock']);
+    });
 });
