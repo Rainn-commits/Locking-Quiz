@@ -20,11 +20,25 @@ class DatabaseSeeder extends Seeder
         );
 
         User::firstOrCreate(
-            ['username' => 'admin'],
+            ['email' => 'admin@lockingquiz.test'],
+            ['name' => 'Administrator', 'password' => 'ganti-password-ini', 'role' => 'admin', 'status' => 'active'],
+        );
+
+        User::firstOrCreate(
+            ['email' => 'guru@lockingquiz.test'],
+            ['name' => 'Guru Contoh', 'password' => 'password', 'role' => 'guru', 'status' => 'active'],
+        );
+
+        User::firstOrCreate(
+            ['email' => 'siswa@lockingquiz.test'],
             [
-                'name'     => 'Administrator',
-                'password' => 'ganti-password-ini',
-                'role'     => 'admin',
+                'name'               => 'Siswa Contoh',
+                'password'           => 'password',
+                'role'               => 'siswa',
+                'status'             => 'active',
+                'is_banned'          => true,
+                'banned_at'          => now(),
+                'jumlah_pelanggaran' => 3,
             ],
         );
     }

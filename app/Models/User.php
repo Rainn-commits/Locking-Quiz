@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -14,9 +15,9 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'username',
         'password',
         'role',
+        'status',
         'is_banned',
         'banned_at',
         'jumlah_pelanggaran',
@@ -35,5 +36,30 @@ class User extends Authenticatable
             'is_banned' => 'boolean',
             'banned_at' => 'datetime',
         ];
+    }
+
+    public function auditLogs(): HasMany
+    {
+        return $this->hasMany(AuditLog::class);
+    }
+
+    public function unlockTokens(): HasMany
+    {
+        return $this->hasMany(UnlockToken::class, 'student_id');
+    }
+
+    public function issuedUnlockTokens(): HasMany
+    {
+        return $this->hasMany(UnlockToken::class, 'issued_by');
+    }
+
+    public function ban(): void
+    {
+        $this->update(['is_banned' => true, 'banned_at' => now()]);
+    }
+
+    public function unban(): void
+    {
+        $this->update(['is_banned' => false, 'banned_at' => null]);
     }
 }
