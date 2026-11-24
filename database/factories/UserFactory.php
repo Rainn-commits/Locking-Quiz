@@ -42,4 +42,11 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    public function guru(): static
+    {
+        return $this->afterMaking(function (User $user): void {
+            $user->forceFill(['role' => 'guru']);
+        });
+    }
 }

@@ -7,6 +7,9 @@ use App\Http\Controllers\Admin\SiswaBannedController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BiodataController;
 use App\Http\Controllers\Api\UnlockTokenController;
+use App\Http\Controllers\Api\QuestionController;
+use App\Http\Controllers\Api\QuizController;
+use App\Http\Controllers\Api\SubjectController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('throttle:10,1')->group(function () {
@@ -14,12 +17,12 @@ Route::middleware('throttle:10,1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
     Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
@@ -59,3 +62,19 @@ Route::prefix('admin')->group(function () {
 
 Route::middleware(['auth:sanctum', 'role:siswa', 'throttle:5,1'])
     ->post('/unlock-token/redeem', [UnlockTokenController::class, 'redeem']);
+Route::middleware(['auth:sanctum', 'can:manage-question'])->group(function () {
+    Route::get('/guru/ping', fn () => response()->json(['message' => 'Halo, Guru!']));
+
+    Route::get('/subjects', [SubjectController::class, 'index']);
+    Route::post('/subjects', [SubjectController::class, 'store']);
+    Route::put('/subjects/{subject}', [SubjectController::class, 'update']);
+    Route::delete('/subjects/{subject}', [SubjectController::class, 'destroy']);
+
+    Route::apiResource('quizzes', QuizController::class);
+
+    Route::scopeBindings()->group(function () {
+        Route::apiResource('quizzes.questions', QuestionController::class)
+            ->only(['index', 'store', 'show', 'update', 'destroy']);
+        Route::post('quizzes/{quiz}/publish', [QuizController::class, 'publish']);
+    });
+});

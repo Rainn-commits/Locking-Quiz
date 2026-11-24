@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(BiodataSeeder::class);
+        $this->call(GuruSeeder::class);
+        $this->call(SubjectSeeder::class);
 
         User::firstOrCreate(
             ['email' => 'test@example.com'],

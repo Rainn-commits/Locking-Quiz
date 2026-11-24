@@ -28,6 +28,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function isGuru(): bool
+    {
+        return $this->role === 'guru';
+    }
+
     protected function casts(): array
     {
         return [
@@ -61,5 +66,10 @@ class User extends Authenticatable
     public function unban(): void
     {
         $this->update(['is_banned' => false, 'banned_at' => null]);
+    }
+
+    public function quizzes(): HasMany
+    {
+        return $this->hasMany(Quiz::class, 'creator_id');
     }
 }
