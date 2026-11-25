@@ -3,7 +3,12 @@
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\GuruController;
+use App\Http\Controllers\Admin\ImporSiswaController;
+use App\Http\Controllers\Admin\JurusanController;
+use App\Http\Controllers\Admin\KelasController;
+use App\Http\Controllers\Admin\RiwayatKuisController;
 use App\Http\Controllers\Admin\SiswaBannedController;
+use App\Http\Controllers\Admin\UserPasswordController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BiodataController;
 use App\Http\Controllers\Api\UnlockTokenController;
@@ -50,12 +55,21 @@ Route::prefix('admin')->group(function () {
             Route::get('siswa-banned', [SiswaBannedController::class, 'index']);
             Route::post('siswa/{siswa}/unlock-token', [SiswaBannedController::class, 'issueToken']);
             Route::post('siswa/{siswa}/override', [SiswaBannedController::class, 'override']);
+
+            Route::apiResource('jurusan', JurusanController::class)->except('show');
+            Route::apiResource('kelas', KelasController::class)->except('show')
+                ->parameters(['kelas' => 'kelas']);
         });
 
         Route::middleware('role:admin')->group(function () {
             Route::apiResource('guru', GuruController::class)->except('show');
             Route::patch('guru/{guru}/verify', [GuruController::class, 'verify']);
             Route::get('audit-logs', [AuditLogController::class, 'index']);
+            Route::patch('users/{user}/reset-password', [UserPasswordController::class, 'update']);
+            Route::get('siswa/import/template', [ImporSiswaController::class, 'template']);
+            Route::post('siswa/import', [ImporSiswaController::class, 'store']);
+            Route::get('riwayat-kuis', [RiwayatKuisController::class, 'index']);
+            Route::get('riwayat-kuis/{quiz}', [RiwayatKuisController::class, 'show']);
         });
     });
 });
@@ -75,7 +89,6 @@ Route::middleware(['auth:sanctum', 'can:manage-question'])->group(function () {
     Route::scopeBindings()->group(function () {
         Route::apiResource('quizzes.questions', QuestionController::class)
             ->only(['index', 'store', 'show', 'update', 'destroy']);
-        Route::post('quizzes/{quiz}/questions/import', [QuestionController::class, 'import']);
         Route::post('quizzes/{quiz}/publish', [QuizController::class, 'publish']);
     });
 });

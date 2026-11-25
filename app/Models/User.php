@@ -12,6 +12,8 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public const ROLE_BISA_RESET = ['guru', 'siswa'];
+
     protected $fillable = [
         'name',
         'email',
@@ -66,6 +68,21 @@ class User extends Authenticatable
     public function unban(): void
     {
         $this->update(['is_banned' => false, 'banned_at' => null]);
+    }
+
+    public function bisaDiresetPassword(): bool
+    {
+        return in_array($this->role, self::ROLE_BISA_RESET, true);
+    }
+
+    public function resetPassword(string $passwordBaru): void
+    {
+        $this->forceFill([
+            'password'       => $passwordBaru,
+            'remember_token' => null,
+        ])->save();
+
+        $this->tokens()->delete();
     }
 
     public function quizzes(): HasMany

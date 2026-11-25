@@ -36,12 +36,32 @@
             <a href="{{ route('admin.siswa.index') }}" class="{{ request()->routeIs('admin.siswa.*') ? 'active' : '' }}">
                 @include('admin.partials.icon', ['name' => 'users']) Data Siswa
             </a>
+            <a href="{{ route('admin.impor-siswa.create') }}" class="{{ request()->routeIs('admin.impor-siswa.*') ? 'active' : '' }}">
+                @include('admin.partials.icon', ['name' => 'upload']) Impor Siswa
+            </a>
+            <div class="nav-label">Organisasi</div>
+            <a href="{{ route('admin.jurusan.index') }}" class="{{ request()->routeIs('admin.jurusan.*') ? 'active' : '' }}">
+                @include('admin.partials.icon', ['name' => 'building']) Jurusan
+            </a>
+            <a href="{{ route('admin.kelas.index') }}" class="{{ request()->routeIs('admin.kelas.*') ? 'active' : '' }}">
+                @include('admin.partials.icon', ['name' => 'layers']) Kelas
+            </a>
+            <div class="nav-label">Kuis</div>
+            <a href="{{ route('admin.riwayat-kuis.index') }}" class="{{ request()->routeIs('admin.riwayat-kuis.*') ? 'active' : '' }}">
+                @include('admin.partials.icon', ['name' => 'book']) Riwayat Kuis
+            </a>
             <div class="nav-label">Keamanan</div>
             <a href="{{ route('admin.banned.index') }}" class="{{ request()->routeIs('admin.banned.*') ? 'active' : '' }}">
                 @include('admin.partials.icon', ['name' => 'shield']) Siswa Banned
                 @if ($jumlahBanned > 0)
                     <span class="pill">{{ $jumlahBanned }}</span>
                 @endif
+            </a>
+            <a href="{{ route('admin.password.index') }}" class="{{ request()->routeIs('admin.password.*') ? 'active' : '' }}">
+                @include('admin.partials.icon', ['name' => 'key']) Reset Password
+            </a>
+            <a href="{{ route('admin.audit.index') }}" class="{{ request()->routeIs('admin.audit.*') ? 'active' : '' }}">
+                @include('admin.partials.icon', ['name' => 'list']) Audit Log
             </a>
         </nav>
 
