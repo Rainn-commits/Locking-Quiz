@@ -38,6 +38,13 @@ class Subject extends Model
             ->value('name') ?? $name;
     }
 
+    public function quizCount(): int
+    {
+        return Quiz::query()
+            ->whereRaw('lower(subject) = lower(?)', [$this->name])
+            ->count();
+    }
+
     public static function imageUrlFor(string $name): ?string
     {
         $path = static::query()

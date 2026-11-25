@@ -13,8 +13,14 @@ class SubjectController extends Controller
 {
     public function index(): JsonResponse
     {
+        $subjects = Subject::orderBy('name')->get()->map(function (Subject $subject): Subject {
+            $subject->sum_quiz = $subject->quizCount();
+
+            return $subject;
+        });
+
         return response()->json([
-            'subjects' => Subject::orderBy('name')->get(),
+            'subjects' => $subjects,
         ]);
     }
 

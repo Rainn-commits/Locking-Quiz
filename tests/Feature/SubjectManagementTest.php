@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Quiz;
 use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -96,5 +97,33 @@ class SubjectManagementTest extends TestCase
             ->assertJsonPath('quiz.subject_image_url', Storage::url($subject->image_path));
 
         $this->assertDatabaseHas('quizzes', ['subject' => 'Matematika']);
+    }
+
+    public function test_index_returns_quiz_count_and_null_progress(): void
+    {
+        Subject::factory()->create(['name' => 'IPA']);
+        Quiz::factory()->count(2)->create(['subject' => 'ipa']);
+        Sanctum::actingAs(User::factory()->guru()->create());
+
+        $this->getJson('/api/subjects')
+            ->assertOk()
+            ->assertJsonPath('subjects.0.name', 'IPA')
+            ->assertJsonPath('subjects.0.sum_quiz', 2)
+            ->assertJsonPath('subjects.0.progress', null);
+    }
+
+    public function test_client_cannot_set_sum_quiz_or_progress(): void
+    {
+        Sanctum::actingAs(User::factory()->guru()->create());
+
+        $this->postJson('/api/subjects', [
+            'name' => 'IPA',
+            'sum_quiz' => 99,
+            'progress' => 88,
+        ])->assertCreated();
+
+        $subject = Subject::firstWhere('name', 'IPA');
+        $this->assertNull($subject->sum_quiz);
+        $this->assertNull($subject->progress);
     }
 }
