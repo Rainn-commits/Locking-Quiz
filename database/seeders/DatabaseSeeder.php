@@ -21,9 +21,10 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Test User', 'password' => 'password'],
         );
 
-        User::firstOrCreate(
+        // updateOrCreate: password admin ikut diperbarui walau akunnya sudah ada di database
+        User::updateOrCreate(
             ['email' => 'admin@lockingquiz.test'],
-            ['name' => 'Administrator', 'password' => 'ganti-password-ini', 'role' => 'admin', 'status' => 'active'],
+            ['name' => 'Administrator', 'password' => '123456', 'role' => 'admin', 'status' => 'active'],
         );
 
         User::firstOrCreate(

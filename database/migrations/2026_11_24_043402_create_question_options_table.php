@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('question_options', function (Blueprint $table) {
+        if (! Schema::hasTable('question_options')) Schema::create('question_options', function (Blueprint $table) {
             $table->id();
             $table->foreignId('question_id')->constrained()->cascadeOnDelete();
             $table->string('option_text');

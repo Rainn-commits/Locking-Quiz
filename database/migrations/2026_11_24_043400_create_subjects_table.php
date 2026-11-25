@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('subjects', function (Blueprint $table) {
+        if (! Schema::hasTable('subjects')) Schema::create('subjects', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100)->unique();
             $table->string('image_path')->nullable();

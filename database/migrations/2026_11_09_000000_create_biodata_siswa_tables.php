@@ -15,7 +15,7 @@ return new class extends Migration
     public function up(): void
     {
         // jurusan_screen: Perbankan, Desain Komunikasi Visual
-        Schema::create('jurusan', function (Blueprint $table) {
+        if (! Schema::hasTable('jurusan')) Schema::create('jurusan', function (Blueprint $table) {
             $table->id();
             $table->string('kode', 10)->unique();
             $table->string('nama', 100)->unique();
@@ -24,7 +24,7 @@ return new class extends Migration
         });
 
         // kelas_screen: kelas X, XI, XII
-        Schema::create('tingkat_kelas', function (Blueprint $table) {
+        if (! Schema::hasTable('tingkat_kelas')) Schema::create('tingkat_kelas', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->smallInteger('angka')->unique();
             $table->string('romawi', 5)->unique();
@@ -32,7 +32,7 @@ return new class extends Migration
         });
 
         // pilih rombel: X Perbankan 1, 2, 3
-        Schema::create('kelas', function (Blueprint $table) {
+        if (! Schema::hasTable('kelas')) Schema::create('kelas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('jurusan_id')->constrained('jurusan')->cascadeOnDelete();
             $table->unsignedSmallInteger('tingkat_id');
@@ -45,7 +45,7 @@ return new class extends Migration
         });
 
         // biodata siswa, diisi bertahap per layar
-        Schema::create('siswa', function (Blueprint $table) {
+        if (! Schema::hasTable('siswa')) Schema::create('siswa', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->unique()->constrained('users')->cascadeOnDelete();
             $table->string('nama_lengkap', 150)->nullable();

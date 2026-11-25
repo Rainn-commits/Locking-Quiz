@@ -8,9 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('password_reset_otps', function (Blueprint $table) {
-            $table->timestamp('verified_at')->nullable()->after('used');
-        });
+        if (! Schema::hasColumn('password_reset_otps', 'verified_at')) {
+            Schema::table('password_reset_otps', function (Blueprint $table) {
+                $table->timestamp('verified_at')->nullable()->after('used');
+            });
+        }
     }
 
     public function down(): void

@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('unlock_tokens', function (Blueprint $table) {
+        if (! Schema::hasTable('unlock_tokens')) Schema::create('unlock_tokens', function (Blueprint $table) {
             $table->id();
             $table->foreignId('student_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('issued_by')->nullable()->constrained('users')->nullOnDelete();

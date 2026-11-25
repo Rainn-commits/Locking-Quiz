@@ -12,12 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role', 10)->default('siswa');
-            $table->string('username', 50)->nullable()->unique(); 
-            $table->boolean('is_banned')->default(false);
-            $table->timestamp('banned_at')->nullable();
-            $table->unsignedTinyInteger('jumlah_pelanggaran')->default(0);
-            $table->string('email')->nullable()->change();     
+            if (! Schema::hasColumn('users', 'role')) {
+                $table->string('role', 10)->default('siswa');
+            }
+            if (! Schema::hasColumn('users', 'username')) {
+                $table->string('username', 50)->nullable()->unique();
+            }
+            if (! Schema::hasColumn('users', 'is_banned')) {
+                $table->boolean('is_banned')->default(false);
+            }
+            if (! Schema::hasColumn('users', 'banned_at')) {
+                $table->timestamp('banned_at')->nullable();
+            }
+            if (! Schema::hasColumn('users', 'jumlah_pelanggaran')) {
+                $table->unsignedTinyInteger('jumlah_pelanggaran')->default(0);
+            }
+            $table->string('email')->nullable()->change();
         });
     }
 
