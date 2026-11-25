@@ -75,6 +75,7 @@ Route::middleware(['auth:sanctum', 'can:manage-question'])->group(function () {
     Route::scopeBindings()->group(function () {
         Route::apiResource('quizzes.questions', QuestionController::class)
             ->only(['index', 'store', 'show', 'update', 'destroy']);
+        Route::post('quizzes/{quiz}/questions/import', [QuestionController::class, 'import']);
         Route::post('quizzes/{quiz}/publish', [QuizController::class, 'publish']);
     });
 });
